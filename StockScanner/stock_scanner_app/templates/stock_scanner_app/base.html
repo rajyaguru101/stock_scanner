@@ -1,0 +1,15 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Stock Scanner App</title>
+    <link rel="stylesheet" href="{% static 'stock_scanner_app/css/styles.css' %}">
+</head>
+<body>
+    <div>
+        {% block content %}
+        {% endblock %}
+    </div>
+    <script src="{% static 'stock_scanner_app/js/scripts.js' %}"></script>
+</body>
+</html>

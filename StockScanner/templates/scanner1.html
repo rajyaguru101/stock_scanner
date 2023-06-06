@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>My Page</title>
+    <!-- rest of your HTML code goes here -->
+  </head>
+  <body>
+    <form id="exchange-form" method="post">
+        {% csrf_token %}
+        <label for="exchange">Select Exchange:</label>
+        <select id="exchange" name="exchange">
+          {% for exchange in exchanges %}
+            <option value="{{ exchange }}">{{ exchange }}</option>
+          {% endfor %}
+        </select>
+        <label for="strategy">Select Strategy:</label>
+        <select id="strategy" name="strategy">
+          <option value="Doji">Doji</option>
+          <option value="Volume Spike">Volume Spike</option>
+        </select>
+        <button type="button" id="submit-btn" onclick="submitForm()">Submit</button>
+      </form>
+    
+      <script>
+        function submitForm() {
+          var form = document.getElementById("exchange-form");
+          var xhr = new XMLHttpRequest();
+          var submitButton = document.getElementById("submit-btn");
+        
+          // Disable the button
+          submitButton.disabled = true;
+        
+          var selectedExchange = document.getElementById("exchange").value;
+        
+          xhr.open("POST", "{% url 'symbol_list' %}");
+          xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+          xhr.onreadystatechange = function() {
+            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+              // Handle the response
+              document.getElementsByTagName("tbody")[0].innerHTML = xhr.responseText;
+        
+              // Enable the button once the response is received
+              submitButton.disabled = false;
+            }
+          };
+        
+          var formData = new FormData(form);
+          formData.append("exchange", selectedExchange);
+        
+          xhr.send(formData);
+        } 
+      </script>
+    
+      <!DOCTYPE html>
+    
+    <html>
+    <head>
+        <title>Doji Data</title>
+        <!-- Add Bootstrap stylesheet -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+              integrity="sha384-HgYXaT3RpHzOXTFM7KsTz/CGxZrNpZl3rGVLmf4VXpG3j4u+7kkd4IgM2PxhUKS7"
+              crossorigin="anonymous">
+        <!-- Add custom stylesheet -->
+ 
+    </head>
+    <body>
+  </body>
+</html>
+
+    <h1>Doji Scanner</h1>
+    <table id="myTable" class="table">
+        <thead>
+            <tr>
+                <th>Date Time</th>
+                <th>Symbols</th>
+                <th>Open</th>
+                <th>Close</th>
+                <th>High</th>
+                <th>Low</th>
+                <th>Volume</th>
+                <th>Doji</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for index, row in df.iterrows %}
+            <tr>
+                <td>{{ index }}</td>
+                <td>{{ row.Symbol }}</td>
+                <td>{{ row.Open }}</td>
+                <td>{{ row.Close }}</td>
+                <td>{{ row.High }}</td>
+                <td>{{ row.Low }}</td>
+                <td>{{ row.Volume }}</td>
+                <td>{{ row.doji }}</td>
+            </tr>
+            {% endfor %}
+
+        </tbody>
+    </table>
+    <!-- Add Bootstrap script -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js" integrity="sha384-CMe..."></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-e5Xz..."></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css" />
+    <script type="text/javascript" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#myTable').DataTable();
+        });
+    </script>

@@ -1,0 +1,76 @@
+{% extends 'stock_scanner_app/base.html' %}
+{% load custom_filters %}
+
+{% block content %}
+
+  <h1>Stock Scanner</h1>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Scan</button>
+  </form>
+
+  {% if not empty_results %}
+  <h2>Results:</h2>
+  <table class="table table-striped table-bordered table-hover">
+    <thead>
+      <tr>
+        {% for column in columns %}
+          <th>{{ column }}</th>
+        {% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in results %}
+      <tr>
+        {% for column in columns %}
+          {% with forloop.counter0 as column_index %}
+            {% with value=row|get_item:column %}
+              {% if column == 'date' %}
+                <td>{{ value|date:"Y-m-d" }}</td>
+              {% elif column == 'symbol' %}
+                <td class="symbol-cell" data-symbol="{{ value }}">{{ value }}</td>
+              {% else %}
+                <td>{{ value|floatformat:2 }}</td>
+              {% endif %}
+            {% endwith %}
+          {% endwith %}
+        {% endfor %}
+      </tr>
+    {% endfor %}
+
+    </tbody>
+  </table>
+  {% else %}
+  <h2>There're no results detected</h2>
+{% endif %}
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+      const scannerTypeSelect = document.getElementById('scanner_type');
+      const spikeThresholdInput = document.getElementById('spike_threshold');
+      const atrMultiplierInput = document.getElementById('atr_multiplier');
+      const atrWindowSizeInput = document.getElementById('atr_window_size');
+      const dojiToleranceInput = document.getElementById('doji_tolerance');
+      const percentageStockScanner = document.getElementById('percentage_stock_scanner');
+  
+      function showHideFields() {
+          const selectedScanner = scannerTypeSelect.value;
+  
+          spikeThresholdInput.parentElement.style.display = selectedScanner === 'spike_volume' ? 'block' : 'none';
+          atrMultiplierInput.parentElement.style.display = selectedScanner === 'volatility' ? 'block' : 'none';
+          atrWindowSizeInput.parentElement.style.display = selectedScanner === 'volatility' ? 'block' : 'none';
+          dojiToleranceInput.parentElement.style.display = selectedScanner === 'doji' ? 'block' : 'none';
+          percentageStockScanner.parentElement.style.display = selectedScanner === 'percentage_stock_scanner' ? 'block' : 'none';
+      }
+  
+      scannerTypeSelect.addEventListener('change', showHideFields);
+      showHideFields();
+  });
+  </script>
+
+{% endblock %}

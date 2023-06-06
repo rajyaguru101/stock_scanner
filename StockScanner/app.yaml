@@ -1,0 +1,9 @@
+runtime: python310
+entrypoint: gunicorn <StockScanner>.wsgi:application
+env_variables:
+  DJANGO_SETTINGS_MODULE: <StockScanner>.settings.production
+
+instance_class: F2
+automatic_scaling:
+  min_instances: 1
+  max_instances: 5

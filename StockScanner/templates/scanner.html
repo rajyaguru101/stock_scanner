@@ -1,0 +1,107 @@
+{% block content %}
+<body>
+  <div class="scanner-container">
+      <div class="scanner-header">
+          <h1>Scanner</h1>
+      </div>
+      <form class="scanner-form" method="post">
+        {% csrf_token %}
+        <label for="exchange">Exchange:</label>
+        <select name="exchange">
+            {% for exchange in exchanges %}
+            <option value="{{ exchange }}">{{ exchange }}</option>
+            {% endfor %}
+        </select>
+        <div id="sector-dropdown"></div>
+        <label for="strategy">Strategy:</label>
+        <select name="strategy[]" multiple>
+            <option value="doji_scanner">Doji Scanner</option>
+            <option value="volume_spike_scanner">Volume Spike Scanner</option>
+            <option value="volatility_scanner">Volatility Scanner</option>
+        </select>
+        <label for="interval">Time Frame:</label>
+        <select name="interval">
+            <option value="1m">1 Min</option>
+            <option value="5m">5 Min</option>
+            <option value="15m">15 Min</option>
+            <option value="30m">30 Min</option>
+            <option value="60m">60 Min</option>
+            <option value="90m">90 Min</option>
+            <option value="1d">1 DAY</option>
+            <option value="5d">5 DAYS</option>
+            <option value="1wk">1 WEEK</option>
+            <option value="1mo">1 Month</option>
+        </select>
+        <input type="submit" value="Scan">
+    </form>
+    
+
+    {% for strategy, result_html in strategy_results.items %}
+      {% if result_html|length > 0 %}
+          <h2>{{ strategy|title }}</h2>
+          <div>{{ result_html|safe }}</div>
+      {% endif %}
+    {% endfor %}
+
+    {% if combined_html %}
+        <h3>Combined Results</h3>
+        {{ combined_html|safe }}
+    {% endif %}
+
+
+  </div>
+</body>
+
+
+{% block extra_js %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const exchangeDropdown = document.querySelector('select[name="exchange"]');
+    const sectorDropdownDiv = document.getElementById('sector-dropdown');
+
+    function createSectorDropdown(sectors) {
+        const sectorLabel = document.createElement('label');
+        sectorLabel.setAttribute('for', 'sector');
+        sectorLabel.textContent = 'Sector:';
+      
+        const sectorSelect = document.createElement('select');
+        sectorSelect.name = 'sector';
+      
+        // Add this block to create an empty option
+        const emptyOption = document.createElement('option');
+        emptyOption.value = '';
+        emptyOption.textContent = 'All Sectors';
+        sectorSelect.appendChild(emptyOption);
+      
+        sectors.forEach(sector => {
+          const option = document.createElement('option');
+          option.value = sector;
+          option.textContent = sector;
+          sectorSelect.appendChild(option);
+        });
+      
+        sectorDropdownDiv.appendChild(sectorLabel);
+        sectorDropdownDiv.appendChild(sectorSelect);
+      }
+
+    function removeSectorDropdown() {
+      sectorDropdownDiv.innerHTML = '';
+    }
+
+    exchangeDropdown.addEventListener('change', function(event) {
+      if (event.target.value === 'NSE') {
+        fetch('/get_sectors/')
+          .then(response => response.json())
+          .then(sectors => {
+            createSectorDropdown(sectors);
+          });
+      } else {
+        removeSectorDropdown();
+      }
+    });
+  });
+</script>
+{% endblock %}
+
+
+{% endblock %}
