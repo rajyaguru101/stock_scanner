@@ -1,7 +1,9 @@
 #spike_volume/logic.py
+from scanners.base_scanner import BaseScanner
+from stock_scanner_app.models import HistoricalData
 import pandas as pd
 
-class SpikeVolumeScanner:
+class SpikeVolumeScanner(BaseScanner):
     def __init__(self, preferences):
         print(preferences)
         self.spike_threshold = float(preferences['spike_threshold'])  
@@ -27,9 +29,25 @@ class SpikeVolumeScanner:
         stocks_with_volume_spike = symbol_last_row[symbol_last_row['volume_spike'] == True].sort_values('volume', ascending=False)
 
         # Set 'Date' as the index again
-        stocks_with_volume_spike = pd.DataFrame(stocks_with_volume_spike)
+        result = pd.DataFrame(stocks_with_volume_spike)
+        
+        # to remove the ".NS" suffix from the symbol column
+        result['symbol'] = result['symbol'].str.replace('.NS', '')
+        result = result.drop(['id', 'company_id'], axis=1)
 
-        return stocks_with_volume_spike
+        return result
+    
+    def get_data(self, symbols):
+        # Fetch historical data for all symbols at once
+        historical_data = HistoricalData.objects.select_related('company').only('symbol', 'date', 'open', 'high', 'low', 'close').filter(symbol__in=symbols)
+        data = pd.DataFrame.from_records(historical_data.values())
+
+        if 'date' not in data.columns:
+            return pd.DataFrame()
+
+        data['date'] = pd.to_datetime(data['date'])  # convert date column to datetime format
+        print(data.head(50))
+        return data
 
 
 

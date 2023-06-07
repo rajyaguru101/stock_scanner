@@ -4,7 +4,7 @@ from stock_scanner_app.models import HistoricalData
 from decimal import Decimal
 import pandas as pd
 
-class DojiScanner:
+class DojiScanner(BaseScanner):
     def __init__(self, preferences):
         self.tolerance = Decimal(preferences['doji_tolerance'])
 
@@ -23,8 +23,11 @@ class DojiScanner:
         historical_data_last.loc[(tolerance_diff < 0) & (historical_data_last['mean'] > historical_data_last['range']), 'doji'] = 1
 
         result = historical_data_last.dropna()
-        #to remove the ".NS" suffix from the symbol column
+        # to remove the ".NS" suffix from the symbol column
         result['symbol'] = result['symbol'].str.replace('.NS', '')
+        
+        result = result.drop(['id', 'company_id'], axis=1)
+
         return result
 
 
