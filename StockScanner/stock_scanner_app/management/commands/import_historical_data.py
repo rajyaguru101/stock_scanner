@@ -44,4 +44,4 @@ class Command(BaseCommand):
 
 # COMMANDS
 # python manage.py import_historical_data
-# python manage.py import_historical_data --end_date=2023-05-09
+# python manage.py import_historical_data --end_date=2023-06-06
