@@ -22,8 +22,10 @@ class DojiScanner:
         # Set 'doji' column to 1 for rows where both conditions are satisfied
         historical_data_last.loc[(tolerance_diff < 0) & (historical_data_last['mean'] > historical_data_last['range']), 'doji'] = 1
 
-        results = historical_data_last.dropna()
-        return results
+        result = historical_data_last.dropna()
+        #to remove the ".NS" suffix from the symbol column
+        result['symbol'] = result['symbol'].str.replace('.NS', '')
+        return result
 
 
 

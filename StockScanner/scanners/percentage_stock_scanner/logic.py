@@ -33,6 +33,9 @@ class PercentageStockScanner(BaseScanner):
 
         # Filter the DataFrame based on the absolute value of the given percentage
         result = last_two_dates_data[np.abs(last_two_dates_data['change_pct']) >= self.percentage_stock_scanner]
+        
+        # to remove the ".NS" suffix from the symbol column
+        result['symbol'] = result['symbol'].str.replace('.NS', '')
         return result
 
 
