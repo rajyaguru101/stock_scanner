@@ -9,27 +9,22 @@ class DojiScanner:
         self.tolerance = Decimal(preferences['doji_tolerance'])
 
     def scan(self, historical_data):
-
+        historical_data['body'] = abs(historical_data['close'] - historical_data['open'])
         historical_data['range'] = historical_data['high'] - historical_data['low']
         historical_data['mean'] = historical_data.groupby('symbol')['range'].transform('mean')
-        historical_data = historical_data.sort_values('date', ascending=False)
         historical_data_last = historical_data.groupby('symbol').tail(1)
-        
-        historical_data_last['body'] = abs(historical_data_last['close'] - historical_data_last['open'])
 
         doji_tolerance = historical_data_last['body'] / historical_data_last['range']
-        
-        # Convert doji_tolerance Series to Decimal values
-        doji_tolerance = doji_tolerance.apply(Decimal)
+        doji_tolerance = doji_tolerance.astype(float)  # Convert to float
 
-        if (doji_tolerance <= self.tolerance).all():
-            historical_data_last['doji'] = 1
-            print(historical_data_last)
-            results = historical_data_last.dropna()
+        tolerance_diff = doji_tolerance - float(self.tolerance)  # Convert self.tolerance to float
 
-            return results
-        else:
-            return pd.DataFrame()
+        # Set 'doji' column to 1 for rows where both conditions are satisfied
+        historical_data_last.loc[(tolerance_diff < 0) & (historical_data_last['mean'] > historical_data_last['range']), 'doji'] = 1
+
+        results = historical_data_last.dropna()
+        return results
+
 
 
 
