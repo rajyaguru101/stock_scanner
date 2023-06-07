@@ -35,5 +35,5 @@ class ScannerForm(forms.Form):
     spike_threshold = forms.DecimalField(max_digits=10, initial=1.5, required=False, label="Spike Threshold", widget=forms.NumberInput(attrs={'id': 'spike_threshold'}))
     atr_multiplier = forms.DecimalField(label='ATR Multiplier', initial=0.02, required=False, widget=forms.NumberInput(attrs={'id': 'atr_multiplier'}))
     atr_window_size = forms.IntegerField(label='ATR Window Size', initial=5, required=False, widget=forms.NumberInput(attrs={'id': 'atr_window_size'}))
-    doji_tolerance = forms.DecimalField(max_digits=10, decimal_places=2, initial=0.05, required=False, label="Tolerance for Doji", widget=forms.NumberInput(attrs={'id': 'doji_tolerance'}))
+    doji_tolerance = forms.DecimalField(max_digits=10, decimal_places=2, initial=0.3, required=False, label="Tolerance for Doji", widget=forms.NumberInput(attrs={'id': 'doji_tolerance'}))
     percentage_stock_scanner = forms.DecimalField(label='Percentage Stock Scanner', initial=0.02, required=False, widget=forms.NumberInput(attrs={'id': 'percentage_stock_scanner'}))
