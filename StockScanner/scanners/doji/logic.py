@@ -1,3 +1,4 @@
+#scanners/doji/logic.py
 from scanners.base_scanner import BaseScanner
 from stock_scanner_app.models import HistoricalData
 from decimal import Decimal
