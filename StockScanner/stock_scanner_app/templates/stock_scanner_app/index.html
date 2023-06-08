@@ -1,55 +1,58 @@
-
 {% extends 'stock_scanner_app/base.html' %}
 {% load custom_filters %}
 
+{% block sidebar %}
+  <div class="sidebar">
+    <h1>Stock Scanner</h1>
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit">Scan</button>
+    </form>
+  </div>
+{% endblock %}
 
 {% block content %}
-
-  <h1>Stock Scanner</h1>
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Scan</button>
-  </form>
-
-  {% if not empty_results %}
-  <h2>Results:</h2>
-  <table class="table table-striped table-bordered table-hover">
-    <thead>
-      <tr>
-        {% for column in columns %}
-          <th>{{ column }}</th>
-        {% endfor %}
-      </tr>
-    </thead>
-    <tbody>
-      {% for row in results %}
-      <tr>
-        {% for column in columns %}
-          {% with forloop.counter0 as column_index %}
-            {% with value=row|get_item:column %}
-              {% if column == 'date' %}
-                <td>{{ value|date:"Y-m-d" }}</td>
-              {% elif column == 'symbol' %}
-                <td class="symbol-cell" data-symbol="{{ value }}">{{ value }}</td>
-              {% else %}
-                <td>{{ value|floatformat:2 }}</td>
-              {% endif %}
+  <div class="results">
+    {% if not empty_results %}
+    <h2>Results:</h2>
+    <table class="table table-striped table-bordered table-hover">
+      <thead>
+        <tr>
+          {% for column in columns %}
+            <th>{{ column }}</th>
+          {% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in results %}
+        <tr>
+          {% for column in columns %}
+            {% with forloop.counter0 as column_index %}
+              {% with value=row|get_item:column %}
+                {% if column == 'date' %}
+                  <td>{{ value|date:"Y-m-d" }}</td>
+                {% elif column == 'symbol' %}
+                  <td class="symbol-cell" data-symbol="{{ value }}">{{ value }}</td>
+                {% else %}
+                  <td>{{ value|floatformat:2 }}</td>
+                {% endif %}
+              {% endwith %}
             {% endwith %}
-          {% endwith %}
+          {% endfor %}
+        </tr>
         {% endfor %}
-      </tr>
-    {% endfor %}
-
-    </tbody>
-  </table>
-  <!-- Rest of the code -->
-{% else %}
-  <h2>There're no results detected</h2>
-{% endif %}
-
+      </tbody>
+    </table>
+    <!-- Rest of the code -->
+    {% else %}
+    <h2>There are no results detected</h2>
+    {% endif %}
+  </div>
+{% endblock %}
 
 
+{% block scripts %}
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
@@ -57,15 +60,15 @@
 {% if not empty_results %}
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 <style>
-.chart-container {
-  position: absolute;
-  z-index: 1000;
-  background-color: white;
-  border: 1px solid #ccc;
-  padding: 15px;
-  border-radius: 4px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-}
+  .chart-container {
+    position: absolute;
+    z-index: 1000;
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 15px;
+    border-radius: 4px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  }
 </style>
 <script>
   var chartData = {{ chart_data|safe }};
@@ -96,20 +99,20 @@
       const percentageStockScanner = document.getElementById('percentage_stock_scanner');
   
       function showHideFields() {
-          const selectedScanner = scannerTypeSelect.value;
-  
-          spikeThresholdInput.parentElement.style.display = selectedScanner === 'spike_volume' ? 'block' : 'none';
-          atrMultiplierInput.parentElement.style.display = selectedScanner === 'volatility' ? 'block' : 'none';
-          atrWindowSizeInput.parentElement.style.display = selectedScanner === 'volatility' ? 'block' : 'none';
-          dojiToleranceInput.parentElement.style.display = selectedScanner === 'doji' ? 'block' : 'none';
-          percentageStockScanner.parentElement.style.display = selectedScanner === 'percentage_stock_scanner' ? 'block' : 'none';
-      }
-  
-      scannerTypeSelect.addEventListener('change', showHideFields);
-      showHideFields();
-  });
-  </script>
-  
+        const selectedScanner = scannerTypeSelect.value;
+
+        spikeThresholdInput.parentElement.style.display = selectedScanner === 'spike_volume' ? 'block' : 'none';
+        atrMultiplierInput.parentElement.style.display = selectedScanner === 'volatility' ? 'block' : 'none';
+        atrWindowSizeInput.parentElement.style.display = selectedScanner === 'volatility' ? 'block' : 'none';
+        dojiToleranceInput.parentElement.style.display = selectedScanner === 'doji' ? 'block' : 'none';
+        percentageStockScanner.parentElement.style.display = selectedScanner === 'percentage_stock_scanner' ? 'block' : 'none';
+    }
+
+    scannerTypeSelect.addEventListener('change', showHideFields);
+    showHideFields();
+});
+</script>
 {% endif %}
 
 {% endblock %}
+
