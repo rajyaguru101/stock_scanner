@@ -26,7 +26,7 @@ class DojiScanner(BaseScanner):
         # to remove the ".NS" suffix from the symbol column
         result['symbol'] = result['symbol'].str.replace('.NS', '')
         
-        result = result.drop(['id', 'company_id'], axis=1)
+        result = result.drop(['id', 'company_id', 'mean'], axis=1)
 
         return result
 
