@@ -5,6 +5,12 @@
     <title>Stock Scanner App</title>
     <link rel="stylesheet" href="{% static 'stock_scanner_app/css/styles.css' %}">
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .sidebar {
+          margin-right: -35px; /* Adjust the margin as needed */
+          margin-left: -35px; /* Add this line to reduce the left-side margin */
+        }
+      </style>
 </head>
 <body>
     <div class="container">
@@ -15,7 +21,7 @@
                     {% endblock %}
                 </div>
             </div>
-            <div class="col-md-9">
+            <div class="col-md-9 content"> <!-- Add 'content' class -->
                 {% block content %}
                 {% endblock %}
             </div>
@@ -26,6 +32,5 @@
     <script src="{% static 'stock_scanner_app/js/scripts.js' %}"></script>
     {% block scripts %}
     {% endblock %}
-
 </body>
 </html>
