@@ -6,6 +6,7 @@ class ScannerForm(forms.Form):
     # Scanner choices
     SCANNER_CHOICES = [
         ('simple_scanner', 'Simple Scanner'),
+        ('candlestick', 'Candlestick'),
         ('spike_volume', 'Spike Volume'),
         ('moving_average_crossover', 'Moving Acerage Crossover'),
         ('doji', 'Doji'),  
