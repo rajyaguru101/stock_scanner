@@ -7,6 +7,7 @@ import pandas as pd
 class DojiScanner(BaseScanner):
     def __init__(self, preferences):
         self.tolerance = Decimal(preferences['doji_tolerance'])
+        print(self.tolerance)
 
     def scan(self, historical_data):
         historical_data['body'] = abs(historical_data['close'] - historical_data['open'])

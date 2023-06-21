@@ -2,6 +2,7 @@
 from django.shortcuts import render
 from .forms import ScannerForm
 from scanners.scanner_factory import ScannerFactory
+from scanners.candlestick import CandlestickFactory
 import pandas as pd
 from .models import CompanyInfo
 from concurrent.futures import ThreadPoolExecutor
@@ -74,20 +75,27 @@ def index(request):
         form = ScannerForm(request.POST)
         if form.is_valid():
             scanner_type = form.cleaned_data['scanner_type']
+            candle_type = form.cleaned_data['candle_type']
             selected_exchange = form.cleaned_data['exchange']
             selected_sector = form.cleaned_data['sector']
-            preferences = get_preferences(form, scanner_type)
+            
             symbols = get_symbols(selected_exchange, selected_sector)
 
-            cache_key = f"results_{scanner_type}_{selected_exchange}_{selected_sector}_{'_'.join(map(str, preferences.values()))}"
-            
-            results = cache.get(cache_key)
+            results = None
 
             if results is None:
-                scanner = ScannerFactory.create_scanner(scanner_type, preferences)
+                if "candlesticks" in scanner_type:
+                    preferences = get_preferences(form, candle_type)
+                    scanner = CandlestickFactory.create_scanner(candle_type, preferences)
+                    
+                else:
+                    preferences = get_preferences(form, scanner_type)
+                    scanner = ScannerFactory.create_scanner(scanner_type, preferences)
+                    
+
                 data = scanner.get_data(symbols)  # Fetch data for all symbols
                 results = scanner.scan(data)  # Scan the data
-                cache.set(cache_key, results, 300)  # Cache the results for 5 minutes (300 seconds)
+                
 
             empty_results = results.empty
             results_list = [dict(row._asdict()) for row in results.itertuples()]

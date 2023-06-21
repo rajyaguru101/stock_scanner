@@ -99,27 +99,30 @@
 </script>
 
 <script>
-  document.addEventListener('DOMContentLoaded', function () {
-      const scannerTypeSelect = document.getElementById('scanner_type');
-      const spikeThresholdInput = document.getElementById('spike_threshold');
-      const atrMultiplierInput = document.getElementById('atr_multiplier');
-      const atrWindowSizeInput = document.getElementById('atr_window_size');
-      const dojiToleranceInput = document.getElementById('doji_tolerance');
-      const percentageStockScanner = document.getElementById('percentage_stock_scanner');
-  
-      function showHideFields() {
+document.addEventListener('DOMContentLoaded', function () {
+    const scannerTypeSelect = document.getElementById('scanner_type');
+    const candleTypeSelect = document.getElementById('candle_type');
+    const spikeThresholdInput = document.getElementById('spike_threshold');
+    const atrMultiplierInput = document.getElementById('atr_multiplier');
+    const atrWindowSizeInput = document.getElementById('atr_window_size');
+    const dojiToleranceInput = document.getElementById('doji_tolerance');
+    const percentageStockScanner = document.getElementById('percentage_stock_scanner');
+
+    function showHideFields() {
         const selectedScanner = scannerTypeSelect.value;
 
         spikeThresholdInput.parentElement.style.display = selectedScanner === 'spike_volume' ? 'block' : 'none';
+        candleTypeSelect.parentElement.style.display = selectedScanner === 'candlesticks' ? 'block' : 'none';
         atrMultiplierInput.parentElement.style.display = selectedScanner === 'volatility' ? 'block' : 'none';
         atrWindowSizeInput.parentElement.style.display = selectedScanner === 'volatility' ? 'block' : 'none';
-        dojiToleranceInput.parentElement.style.display = selectedScanner === 'doji' ? 'block' : 'none';
+        dojiToleranceInput.parentElement.style.display = selectedScanner === 'doji' || selectedScanner === 'candlesticks' ? 'block' : 'none';
         percentageStockScanner.parentElement.style.display = selectedScanner === 'percentage_stock_scanner' ? 'block' : 'none';
     }
 
     scannerTypeSelect.addEventListener('change', showHideFields);
     showHideFields();
 });
+
 </script>
 {% endif %}
 {% endblock %}

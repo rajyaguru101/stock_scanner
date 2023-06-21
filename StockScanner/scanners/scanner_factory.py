@@ -1,7 +1,6 @@
 from .simple_scanner.logic import SimpleScanner
 from .spike_volume.logic import SpikeVolumeScanner
 from .moving_average_crossover.logic import MovingAverageCrossoverScanner
-from .doji.logic import DojiScanner
 from .volatility_scanner.logic import VolatilityScanner
 from .percentage_stock_scanner.logic import PercentageStockScanner
 
