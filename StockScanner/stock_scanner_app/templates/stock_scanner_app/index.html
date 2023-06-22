@@ -102,6 +102,7 @@
 document.addEventListener('DOMContentLoaded', function () {
     const scannerTypeSelect = document.getElementById('scanner_type');
     const candleTypeSelect = document.getElementById('candle_type');
+    const indicatorsTypeSelect = document.getElementById('indicators_type');
     const spikeThresholdInput = document.getElementById('spike_threshold');
     const atrMultiplierInput = document.getElementById('atr_multiplier');
     const atrWindowSizeInput = document.getElementById('atr_window_size');
@@ -113,6 +114,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         spikeThresholdInput.parentElement.style.display = selectedScanner === 'spike_volume' ? 'block' : 'none';
         candleTypeSelect.parentElement.style.display = selectedScanner === 'candlesticks' ? 'block' : 'none';
+        indicatorsTypeSelect.parentElement.style.display = selectedScanner === 'indicators' ? 'block' : 'none';
         atrMultiplierInput.parentElement.style.display = selectedScanner === 'volatility' ? 'block' : 'none';
         atrWindowSizeInput.parentElement.style.display = selectedScanner === 'volatility' ? 'block' : 'none';
         dojiToleranceInput.parentElement.style.display = selectedScanner === 'doji' || selectedScanner === 'candlesticks' ? 'block' : 'none';

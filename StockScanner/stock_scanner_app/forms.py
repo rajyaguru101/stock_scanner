@@ -6,12 +6,17 @@ class ScannerForm(forms.Form):
     # Scanner choices
     SCANNER_CHOICES = [
         ('candlesticks', 'Candlesticks'),
+        ('indicators', 'Indicators'),
         ('simple_scanner', 'Simple Scanner'),
-        ('candlestick', 'Candlestick'),
         ('spike_volume', 'Spike Volume'),
         ('moving_average_crossover', 'Moving Acerage Crossover'), 
         ('volatility', 'Volatility'),
         ('percentage_stock_scanner', 'Percentage Stock Scanner'),
+    ]
+
+    INDICATOR_CHOICES = [
+        ('SMA', 'SMA'),
+        ('moving_average_crossover', 'Moving Average Crossover'),
     ]
 
     CANDLESTICK_CHOICES = [
@@ -36,6 +41,7 @@ class ScannerForm(forms.Form):
     # Form fields
     scanner_type = forms.ChoiceField(choices=SCANNER_CHOICES, label="Select scanner", widget=forms.Select(attrs={'id': 'scanner_type'}))
     candle_type = forms.ChoiceField(choices=CANDLESTICK_CHOICES, label="Select Candle", widget=forms.Select(attrs={'id': 'candle_type'}))
+    indicators_type = forms.ChoiceField(choices=INDICATOR_CHOICES, label="Select Candle", widget=forms.Select(attrs={'id': 'indicators_type'}))
     exchange = forms.ChoiceField(choices=EXCHANGE_CHOICES, label="Select exchange")
     sector = forms.ChoiceField(choices=SECTOR_CHOICES, required=False, label="Select sector")
     timeframe = forms.ChoiceField(choices=TIMEFRAME_CHOICES, label="Select timeframe")

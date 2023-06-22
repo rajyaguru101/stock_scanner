@@ -3,6 +3,7 @@ from django.shortcuts import render
 from .forms import ScannerForm
 from scanners.scanner_factory import ScannerFactory
 from scanners.candlestick import CandlestickFactory
+from scanners.indicator import IndicatorFactory
 import pandas as pd
 from .models import CompanyInfo
 from concurrent.futures import ThreadPoolExecutor
@@ -76,6 +77,7 @@ def index(request):
         if form.is_valid():
             scanner_type = form.cleaned_data['scanner_type']
             candle_type = form.cleaned_data['candle_type']
+            indicators_type = form.cleaned_data['indicators_type']
             selected_exchange = form.cleaned_data['exchange']
             selected_sector = form.cleaned_data['sector']
             
@@ -87,6 +89,9 @@ def index(request):
                 if "candlesticks" in scanner_type:
                     preferences = get_preferences(form, candle_type)
                     scanner = CandlestickFactory.create_scanner(candle_type, preferences)
+                elif "indicators" in scanner_type:
+                    preferences = get_preferences(form, indicators_type)
+                    scanner = IndicatorFactory.create_scanner(indicators_type, preferences)
                     
                 else:
                     preferences = get_preferences(form, scanner_type)
